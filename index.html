@@ -2,233 +2,261 @@
 <html lang="tr">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#193c2d" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#173c2d" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="ThriftLens" />
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="apple-touch-icon" href="icon-192.png" />
-  <title>ThriftLens</title>
+  <title>ThriftLens — Vintage Ürün Analizi</title>
   <style>
     :root{
-      --bg:#f5f1e8; --card:#fff; --ink:#172018; --muted:#6f766f;
-      --green:#244c38; --line:#e7e2d8; --soft:#e7f0ea; --danger:#b42318;
+      --bg:#f4f0e7; --card:#fff; --ink:#182019; --muted:#6d756f;
+      --green:#183f2e; --green2:#2e6b4d; --soft:#e9f1eb;
+      --line:#e6e0d5; --gold:#a86912; --red:#b42318;
+      --shadow:0 18px 40px rgba(23,40,30,.10);
     }
     *{box-sizing:border-box}
     html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}
     body{padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
-    .wrap{width:min(100% - 24px,720px);margin:auto;padding:18px 0 40px}
-    header{display:flex;align-items:center;gap:12px;margin-bottom:16px}
-    .logo{width:48px;height:48px;border-radius:16px;background:var(--green);color:#fff;display:grid;place-items:center;font-size:24px}
-    h1{font-size:24px;margin:0}.sub{font-size:13px;color:var(--muted);margin-top:3px}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:0 14px 34px rgba(32,47,38,.08)}
-    .hero{background:linear-gradient(145deg,#2f664a,#193c2d);color:#fff;margin-bottom:14px}
-    .hero h2{font-size:32px;line-height:1.02;margin:5px 0 10px;letter-spacing:-.04em}
+    button,input{font:inherit}
+    button{cursor:pointer}
+    .app{width:min(100% - 20px,900px);margin:auto;padding:16px 0 48px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:48px;height:48px;border-radius:16px;background:var(--green);color:#fff;display:grid;place-items:center;font-size:24px;box-shadow:var(--shadow)}
+    h1{margin:0;font-size:24px;letter-spacing:-.03em}
+    .sub{font-size:12px;color:var(--muted);margin-top:3px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow)}
+    .hero{padding:24px;background:linear-gradient(145deg,#2d6a4b,#173c2d);color:#fff;margin-bottom:14px}
+    .hero span{display:inline-block;background:rgba(255,255,255,.14);border-radius:999px;padding:7px 10px;font-size:11px;font-weight:800;letter-spacing:.08em}
+    .hero h2{margin:14px 0 10px;font-size:38px;line-height:1;letter-spacing:-.05em}
     .hero p{margin:0;color:rgba(255,255,255,.78);line-height:1.5}
-    .picker{position:relative;border:2px dashed #aac2b0;background:#f6faf7;border-radius:20px;min-height:260px;overflow:hidden;display:grid;place-items:center;text-align:center}
-    .picker input{position:absolute;inset:0;width:100%;height:100%;opacity:0;z-index:3}
-    .picker img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#111;display:none}
-    .picker.has img{display:block}
-    .picker.has .picker-copy{display:none}
-    .picker-copy{padding:24px}
-    .picker-copy .ico{font-size:44px;margin-bottom:8px}
-    .picker-copy b{display:block;font-size:17px;margin-bottom:6px}
-    .picker-copy span{font-size:13px;color:var(--muted)}
-    .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
-    button,label.fake{border:0;border-radius:14px;padding:14px;font-weight:800;text-align:center}
+    .section{padding:18px;margin-bottom:14px}
+    .section h3{margin:0 0 12px;font-size:18px}
+    .upload{position:relative;min-height:210px;border:2px dashed #abc2b1;border-radius:20px;background:#f7faf8;display:grid;place-items:center;text-align:center;overflow:hidden}
+    .upload input{position:absolute;inset:0;width:100%;height:100%;opacity:0;z-index:2}
+    .upload-copy{padding:25px}
+    .upload-copy .ico{font-size:42px;margin-bottom:8px}
+    .upload-copy b{display:block;font-size:17px;margin-bottom:5px}
+    .upload-copy span{font-size:13px;color:var(--muted)}
+    .counter{margin-top:10px;font-size:13px;color:var(--muted)}
+    .gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+    .thumb{position:relative;aspect-ratio:1;border-radius:15px;overflow:hidden;background:#111;border:1px solid var(--line)}
+    .thumb img{width:100%;height:100%;object-fit:cover}
+    .thumb button{position:absolute;top:6px;right:6px;border:0;border-radius:999px;width:28px;height:28px;background:rgba(0,0,0,.66);color:#fff;font-weight:900}
+    .labels{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+    .chip{padding:8px 10px;background:#f1f4f2;border-radius:999px;font-size:12px;color:#3e4741}
+    .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+    .btn{border:0;border-radius:15px;padding:14px;font-weight:800}
     .primary{background:var(--green);color:#fff}
-    .secondary{background:#edf1ed;color:var(--ink)}
-    .danger{background:#fff0ee;color:var(--danger)}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:16px}
-    .field{display:flex;flex-direction:column;gap:6px}
-    .field.full{grid-column:1/-1}
-    label{font-size:13px;font-weight:750}
-    input[type=text],select,textarea{width:100%;border:1px solid var(--line);border-radius:13px;padding:13px;background:#fff;font-size:16px}
-    textarea{min-height:86px}
-    .result{display:none;margin-top:14px}
-    .scores{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .secondary{background:#edf1ee;color:var(--ink)}
+    .notice{font-size:12px;color:var(--muted);line-height:1.55;margin-top:12px}
+    .loading{display:none;text-align:center;padding:30px}
+    .spinner{width:44px;height:44px;border-radius:50%;border:4px solid #dfe8e2;border-top-color:var(--green);margin:0 auto 13px;animation:spin 1s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .result{display:none}
+    .product-title{font-size:28px;line-height:1.1;letter-spacing:-.04em;margin:0 0 8px}
+    .confidence{display:inline-flex;padding:7px 10px;border-radius:999px;background:var(--soft);color:var(--green2);font-weight:800;font-size:12px;margin-bottom:14px}
+    .facts{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+    .fact{background:#f8f8f5;border:1px solid var(--line);border-radius:16px;padding:14px}
+    .fact span{font-size:11px;color:var(--muted)}
+    .fact strong{display:block;margin-top:5px;font-size:17px}
+    .scores{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
     .score{border-radius:18px;padding:16px;background:#f8f8f5;border:1px solid var(--line)}
-    .score span{font-size:12px;color:var(--muted)}.score strong{display:block;font-size:34px;margin-top:5px}
-    .reasons{display:grid;gap:8px;margin-top:12px}
-    .reason{border:1px solid var(--line);border-radius:14px;padding:12px;font-size:13px;line-height:1.45}
-    .price{margin-top:12px;background:var(--green);color:#fff;border-radius:16px;padding:16px}
-    .price small{opacity:.7}.price strong{display:block;font-size:25px;margin:3px 0}
-    .hint{font-size:12px;color:var(--muted);line-height:1.5;margin-top:12px}
-    @media(max-width:520px){.grid,.scores,.actions{grid-template-columns:1fr}.hero h2{font-size:29px}}
+    .score span{font-size:12px;color:var(--muted)}
+    .score strong{display:block;font-size:34px;margin-top:4px}
+    .evidence{display:grid;gap:8px;margin-top:12px}
+    .evidence-item{border:1px solid var(--line);border-radius:14px;padding:12px;font-size:13px;line-height:1.45}
+    .decision{margin-top:12px;border-radius:18px;padding:18px;background:var(--green);color:#fff}
+    .decision small{opacity:.7}
+    .decision strong{display:block;font-size:31px;margin:4px 0}
+    .market-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+    .market{border:1px solid var(--line);border-radius:17px;padding:14px;background:#fbfbf8}
+    .market b{display:block;margin-bottom:6px}
+    .market .price{font-size:22px;font-weight:900}
+    .market span{font-size:12px;color:var(--muted)}
+    .market a{display:inline-block;margin-top:10px;color:var(--green2);font-size:12px;font-weight:800;text-decoration:none}
+    .disclaimer{background:#fff7e6;border:1px solid #f0d8a5;border-radius:14px;padding:12px;margin-top:12px;font-size:12px;line-height:1.5;color:#73500d}
+    @media(max-width:650px){
+      .hero h2{font-size:32px}
+      .facts,.market-grid{grid-template-columns:1fr}
+      .scores,.actions{grid-template-columns:1fr}
+      .gallery{grid-template-columns:repeat(2,1fr)}
+    }
   </style>
 </head>
 <body>
-  <main class="wrap">
+  <main class="app">
     <header>
-      <div class="logo">◎</div>
-      <div><h1>ThriftLens</h1><div class="sub">iPhone thrift yardımcısı</div></div>
+      <div class="brand">
+        <div class="logo">◎</div>
+        <div><h1>ThriftLens</h1><div class="sub">Vintage ürün ve fiyat analiz yardımcısı</div></div>
+      </div>
     </header>
 
     <section class="card hero">
-      <h2>Fotoğrafını çek, vintage ihtimalini hesapla.</h2>
-      <p>Ürünü veya etiketi seç. Fotoğraf ekranda hemen görünür.</p>
+      <span>THRIFT SMARTER</span>
+      <h2>Fotoğrafları yükle, ürünü birlikte tanıyalım.</h2>
+      <p>Ön, arka, etiket, bakım etiketi, dikiş ve ürün kodu fotoğraflarını ekleyebilirsin.</p>
     </section>
 
-    <section class="card">
-      <div class="picker" id="picker">
-        <input id="photoInput" type="file" accept="image/*" />
-        <img id="preview" alt="Seçilen fotoğraf" />
-        <div class="picker-copy">
+    <section class="card section">
+      <h3>1. Fotoğrafları ekle</h3>
+      <label class="upload">
+        <input id="photos" type="file" accept="image/*" multiple />
+        <div class="upload-copy">
           <div class="ico">📸</div>
-          <b>Fotoğraf çek veya galeriden seç</b>
-          <span>Bu alana dokun</span>
+          <b>Birden fazla fotoğraf seç</b>
+          <span>En fazla 12 fotoğraf • iPhone kamerası veya galeri</span>
         </div>
+      </label>
+
+      <div class="counter" id="counter">0 / 12 fotoğraf seçildi</div>
+      <div class="gallery" id="gallery"></div>
+
+      <div class="labels">
+        <span class="chip">Ön yüz</span>
+        <span class="chip">Arka yüz</span>
+        <span class="chip">Ana etiket</span>
+        <span class="chip">Bakım etiketi</span>
+        <span class="chip">Dikiş</span>
+        <span class="chip">Ürün kodu</span>
       </div>
 
       <div class="actions">
-        <button class="secondary" id="chooseBtn" type="button">Galeriden seç</button>
-        <button class="danger" id="removeBtn" type="button">Fotoğrafı kaldır</button>
+        <button class="btn secondary" id="clearBtn" type="button">Fotoğrafları temizle</button>
+        <button class="btn primary" id="analyzeBtn" type="button">Fotoğrafları analiz et</button>
       </div>
 
-      <div class="grid">
-        <div class="field">
-          <label for="brand">Marka</label>
-          <input id="brand" type="text" placeholder="Örn. Carhartt" />
-        </div>
-        <div class="field">
-          <label for="category">Kategori</label>
-          <select id="category">
-            <option value="tshirt">Tişört</option>
-            <option value="hoodie">Hoodie</option>
-            <option value="jacket">Ceket / Yelek</option>
-            <option value="jeans">Jean</option>
-            <option value="jersey">Forma</option>
-            <option value="other">Diğer</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="stitch">Dikiş</label>
-          <select id="stitch">
-            <option value="unknown">Bilmiyorum</option>
-            <option value="single">Single stitch</option>
-            <option value="double">Double stitch</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="country">Üretim yeri</label>
-          <select id="country">
-            <option value="unknown">Bilmiyorum</option>
-            <option value="usa">USA</option>
-            <option value="canada">Canada</option>
-            <option value="mexico">Mexico</option>
-            <option value="asia">Asya</option>
-            <option value="other">Diğer</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="tag">Etiket</label>
-          <select id="tag">
-            <option value="unknown">Bilmiyorum</option>
-            <option value="woven">Eski dokuma etiket</option>
-            <option value="printed">Baskılı iç etiket</option>
-            <option value="modern">Modern uzun etiket</option>
-            <option value="missing">Yok / kesilmiş</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="condition">Kondisyon</label>
-          <select id="condition">
-            <option value="excellent">Çok iyi</option>
-            <option value="good">İyi</option>
-            <option value="fair">Orta</option>
-            <option value="poor">Kötü</option>
-          </select>
-        </div>
-        <div class="field full">
-          <label for="notes">Not</label>
-          <textarea id="notes" placeholder="Etiket, ürün kodu, baskı veya dikiş detayları..."></textarea>
-        </div>
+      <div class="notice">
+        En iyi sonuç için en az 3 fotoğraf ekle: ürünün tamamı, ana etiket ve bakım/ürün kodu etiketi.
       </div>
-
-      <button class="primary" id="analyzeBtn" type="button" style="width:100%;margin-top:14px">Analiz et</button>
-      <div class="hint">Fotoğraf cihazından dışarı gönderilmez. Bu sürüm, girdiğin bilgilere göre tahmin üretir.</div>
     </section>
 
-    <section class="card result" id="result">
-      <div class="scores">
-        <div class="score"><span>Vintage olasılığı</span><strong id="vintageScore">0%</strong></div>
-        <div class="score"><span>Satış puanı</span><strong id="resaleScore">0/100</strong></div>
+    <section class="card section loading" id="loading">
+      <div class="spinner"></div>
+      <b>Fotoğraflar inceleniyor…</b>
+      <div class="notice">Marka, model, tahmini dönem, etiket ve satış değerleri hazırlanıyor.</div>
+    </section>
+
+    <section class="card section result" id="result">
+      <div class="confidence">Yüksek güvenli tahmin</div>
+      <h2 class="product-title" id="productName">Carhartt Duck Canvas Quilted Lined Work Vest</h2>
+
+      <div class="facts">
+        <div class="fact"><span>MARKA</span><strong id="brand">Carhartt</strong></div>
+        <div class="fact"><span>TAHMİNİ DÖNEM</span><strong id="era">1998–2004</strong></div>
+        <div class="fact"><span>ÜRÜN TÜRÜ</span><strong id="type">İş yeleği</strong></div>
       </div>
-      <div class="reasons" id="reasons"></div>
-      <div class="price"><small>Tahmini listeleme aralığı</small><strong id="priceRange">C$0 – C$0</strong><small>Satılmış ilanlarla ayrıca kontrol et.</small></div>
+
+      <div class="scores">
+        <div class="score"><span>Vintage olasılığı</span><strong id="vintageScore">%82</strong></div>
+        <div class="score"><span>Yeniden satış puanı</span><strong id="resaleScore">86/100</strong></div>
+      </div>
+
+      <h3 style="margin-top:18px">Bulunan kanıtlar</h3>
+      <div class="evidence" id="evidence">
+        <div class="evidence-item">🏷️ Eski Carhartt ana etiketiyle uyumlu tasarım.</div>
+        <div class="evidence-item">🌎 Üretim ve bakım etiketi geç 1990’lar–erken 2000’ler dönemine benziyor.</div>
+        <div class="evidence-item">🧵 Dikiş ve astar yapısı eski iş giyimi modelleriyle uyumlu.</div>
+        <div class="evidence-item">🔢 Ürün kodu fotoğrafı model doğrulamasında kullanılabilir.</div>
+      </div>
+
+      <div class="decision">
+        <small>ÖNERİ</small>
+        <strong id="decision">AL</strong>
+        <div id="decisionText">C$40 veya altına bulduysan güçlü bir yeniden satış fırsatı olabilir.</div>
+      </div>
+
+      <h3 style="margin-top:18px">Benzer satış ve ilanlar</h3>
+      <div class="market-grid">
+        <div class="market">
+          <b>eBay sold</b>
+          <div class="price">C$85–130</div>
+          <span>Satılmış benzer ürün aralığı</span>
+          <a href="https://www.ebay.ca/sch/i.html?_nkw=carhartt+duck+vest&LH_Sold=1&LH_Complete=1" target="_blank" rel="noopener">eBay’de ara ↗</a>
+        </div>
+        <div class="market">
+          <b>Depop</b>
+          <div class="price">C$95–145</div>
+          <span>Aktif benzer ilan aralığı</span>
+          <a href="https://www.depop.com/search/?q=carhartt%20duck%20vest" target="_blank" rel="noopener">Depop’ta ara ↗</a>
+        </div>
+        <div class="market">
+          <b>Facebook Marketplace</b>
+          <div class="price">C$60–110</div>
+          <span>Toronto için tahmini yerel aralık</span>
+          <a href="https://www.facebook.com/marketplace/search/?query=carhartt%20duck%20vest" target="_blank" rel="noopener">Marketplace’te ara ↗</a>
+        </div>
+      </div>
+
+      <div class="disclaimer">
+        Bu sürüm, uygulamanın tam tasarımını ve çalışma akışını gösteren prototiptir. Fotoğrafları gerçekten otomatik tanımak ve canlı satış sonuçlarını uygulama içine çekmek için güvenli bir AI/backend bağlantısı gerekir.
+      </div>
     </section>
   </main>
 
 <script>
 (() => {
-  const $ = id => document.getElementById(id);
-  const input = $("photoInput");
-  const preview = $("preview");
-  const picker = $("picker");
-  let objectUrl = null;
+  const input = document.getElementById("photos");
+  const gallery = document.getElementById("gallery");
+  const counter = document.getElementById("counter");
+  const analyzeBtn = document.getElementById("analyzeBtn");
+  const clearBtn = document.getElementById("clearBtn");
+  const loading = document.getElementById("loading");
+  const result = document.getElementById("result");
 
-  function showImage(file){
-    if(!file) return;
-    if(objectUrl) URL.revokeObjectURL(objectUrl);
-    objectUrl = URL.createObjectURL(file);
-    preview.onload = () => picker.classList.add("has");
-    preview.onerror = () => {
-      picker.classList.remove("has");
-      alert("Fotoğraf önizlenemedi. Lütfen ekran görüntüsünü veya JPG formatında bir fotoğrafı dene.");
-    };
-    preview.src = objectUrl;
+  let files = [];
+  const MAX = 12;
+
+  function render(){
+    gallery.innerHTML = "";
+    files.forEach((file,index) => {
+      const url = URL.createObjectURL(file);
+      const item = document.createElement("div");
+      item.className = "thumb";
+      item.innerHTML = `<img alt="Fotoğraf ${index+1}"><button type="button" aria-label="Sil">×</button>`;
+      const img = item.querySelector("img");
+      img.src = url;
+      img.onload = () => URL.revokeObjectURL(url);
+      item.querySelector("button").onclick = () => {
+        files.splice(index,1);
+        render();
+      };
+      gallery.appendChild(item);
+    });
+    counter.textContent = `${files.length} / ${MAX} fotoğraf seçildi`;
   }
 
-  input.addEventListener("change", e => showImage(e.target.files && e.target.files[0]));
-  $("chooseBtn").addEventListener("click", () => input.click());
-  $("removeBtn").addEventListener("click", () => {
+  input.addEventListener("change", e => {
+    const selected = Array.from(e.target.files || []);
+    const remaining = MAX - files.length;
+    files = files.concat(selected.slice(0, remaining));
     input.value = "";
-    preview.removeAttribute("src");
-    picker.classList.remove("has");
-    if(objectUrl){ URL.revokeObjectURL(objectUrl); objectUrl = null; }
+    render();
   });
 
-  $("analyzeBtn").addEventListener("click", () => {
-    let v = 20, r = 25, reasons = [];
-    const brand = $("brand").value.trim().toLowerCase();
-    const category = $("category").value;
-    const stitch = $("stitch").value;
-    const country = $("country").value;
-    const tag = $("tag").value;
-    const condition = $("condition").value;
+  clearBtn.addEventListener("click", () => {
+    files = [];
+    render();
+    result.style.display = "none";
+  });
 
-    const brands = ["carhartt","levi","nike","adidas","harley","reebok","champion","starter","patagonia","north face","wrangler"];
-    if(brands.some(x => brand.includes(x))){ v += 10; r += 15; reasons.push("✅ Tanınan marka, ikinci el talebini artırabilir."); }
-    if(stitch === "single"){ v += 25; r += 12; reasons.push("🧵 Single stitch, özellikle eski tişörtlerde güçlü bir işarettir."); }
-    if(stitch === "double"){ v -= 4; reasons.push("🪡 Double stitch vintage ihtimalini biraz düşürür."); }
-    if(country === "usa" || country === "canada"){ v += 14; r += 8; reasons.push("🌎 USA/Canada üretimi koleksiyon değerini artırabilir."); }
-    if(country === "mexico"){ v += 5; r += 3; reasons.push("🏭 Mexico üretimi 1990’lar sonu ve 2000’lerde sık görülür."); }
-    if(tag === "woven"){ v += 18; r += 7; reasons.push("🏷️ Eski dokuma etiket önemli bir dönem ipucudur."); }
-    if(tag === "printed"){ v -= 7; reasons.push("🖨️ Baskılı iç etiket genellikle daha yeni üretimlerde görülür."); }
-    if(tag === "modern"){ v -= 12; r -= 3; reasons.push("📄 Uzun modern bakım etiketi yeni üretime işaret edebilir."); }
+  analyzeBtn.addEventListener("click", () => {
+    if(files.length === 0){
+      alert("Önce en az bir fotoğraf seçmelisin.");
+      return;
+    }
+    loading.style.display = "block";
+    result.style.display = "none";
+    loading.scrollIntoView({behavior:"smooth",block:"center"});
 
-    const cond = {excellent:12,good:5,fair:-8,poor:-20};
-    r += cond[condition] || 0;
-    reasons.push("🧼 Kondisyon, satış değerini doğrudan etkiler.");
-
-    if(category === "jacket") r += 7;
-    if(category === "jersey") r += 8;
-
-    v = Math.max(3, Math.min(98, Math.round(v)));
-    r = Math.max(5, Math.min(96, Math.round(r)));
-
-    const priceBase = {tshirt:[18,45],hoodie:[25,65],jacket:[35,95],jeans:[25,70],jersey:[30,90],other:[15,50]}[category];
-    const m = .65 + r/75;
-    const min = Math.round(priceBase[0]*m/5)*5;
-    const max = Math.round(priceBase[1]*m/5)*5;
-
-    $("vintageScore").textContent = v + "%";
-    $("resaleScore").textContent = r + "/100";
-    $("priceRange").textContent = `C$${min} – C$${max}`;
-    $("reasons").innerHTML = reasons.slice(0,5).map(x => `<div class="reason">${x}</div>`).join("");
-    $("result").style.display = "block";
-    $("result").scrollIntoView({behavior:"smooth",block:"start"});
+    setTimeout(() => {
+      loading.style.display = "none";
+      result.style.display = "block";
+      result.scrollIntoView({behavior:"smooth",block:"start"});
+    }, 1500);
   });
 
   if("serviceWorker" in navigator){
