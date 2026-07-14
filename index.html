@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#193c2d" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="ThriftLens" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <title>ThriftLens</title>
+  <style>
+    :root{
+      --bg:#f5f1e8; --card:#fff; --ink:#172018; --muted:#6f766f;
+      --green:#244c38; --line:#e7e2d8; --soft:#e7f0ea; --danger:#b42318;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}
+    body{padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+    .wrap{width:min(100% - 24px,720px);margin:auto;padding:18px 0 40px}
+    header{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+    .logo{width:48px;height:48px;border-radius:16px;background:var(--green);color:#fff;display:grid;place-items:center;font-size:24px}
+    h1{font-size:24px;margin:0}.sub{font-size:13px;color:var(--muted);margin-top:3px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:0 14px 34px rgba(32,47,38,.08)}
+    .hero{background:linear-gradient(145deg,#2f664a,#193c2d);color:#fff;margin-bottom:14px}
+    .hero h2{font-size:32px;line-height:1.02;margin:5px 0 10px;letter-spacing:-.04em}
+    .hero p{margin:0;color:rgba(255,255,255,.78);line-height:1.5}
+    .picker{position:relative;border:2px dashed #aac2b0;background:#f6faf7;border-radius:20px;min-height:260px;overflow:hidden;display:grid;place-items:center;text-align:center}
+    .picker input{position:absolute;inset:0;width:100%;height:100%;opacity:0;z-index:3}
+    .picker img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#111;display:none}
+    .picker.has img{display:block}
+    .picker.has .picker-copy{display:none}
+    .picker-copy{padding:24px}
+    .picker-copy .ico{font-size:44px;margin-bottom:8px}
+    .picker-copy b{display:block;font-size:17px;margin-bottom:6px}
+    .picker-copy span{font-size:13px;color:var(--muted)}
+    .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+    button,label.fake{border:0;border-radius:14px;padding:14px;font-weight:800;text-align:center}
+    .primary{background:var(--green);color:#fff}
+    .secondary{background:#edf1ed;color:var(--ink)}
+    .danger{background:#fff0ee;color:var(--danger)}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:16px}
+    .field{display:flex;flex-direction:column;gap:6px}
+    .field.full{grid-column:1/-1}
+    label{font-size:13px;font-weight:750}
+    input[type=text],select,textarea{width:100%;border:1px solid var(--line);border-radius:13px;padding:13px;background:#fff;font-size:16px}
+    textarea{min-height:86px}
+    .result{display:none;margin-top:14px}
+    .scores{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .score{border-radius:18px;padding:16px;background:#f8f8f5;border:1px solid var(--line)}
+    .score span{font-size:12px;color:var(--muted)}.score strong{display:block;font-size:34px;margin-top:5px}
+    .reasons{display:grid;gap:8px;margin-top:12px}
+    .reason{border:1px solid var(--line);border-radius:14px;padding:12px;font-size:13px;line-height:1.45}
+    .price{margin-top:12px;background:var(--green);color:#fff;border-radius:16px;padding:16px}
+    .price small{opacity:.7}.price strong{display:block;font-size:25px;margin:3px 0}
+    .hint{font-size:12px;color:var(--muted);line-height:1.5;margin-top:12px}
+    @media(max-width:520px){.grid,.scores,.actions{grid-template-columns:1fr}.hero h2{font-size:29px}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <div class="logo">◎</div>
+      <div><h1>ThriftLens</h1><div class="sub">iPhone thrift yardımcısı</div></div>
+    </header>
+
+    <section class="card hero">
+      <h2>Fotoğrafını çek, vintage ihtimalini hesapla.</h2>
+      <p>Ürünü veya etiketi seç. Fotoğraf ekranda hemen görünür.</p>
+    </section>
+
+    <section class="card">
+      <div class="picker" id="picker">
+        <input id="photoInput" type="file" accept="image/*" />
+        <img id="preview" alt="Seçilen fotoğraf" />
+        <div class="picker-copy">
+          <div class="ico">📸</div>
+          <b>Fotoğraf çek veya galeriden seç</b>
+          <span>Bu alana dokun</span>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="secondary" id="chooseBtn" type="button">Galeriden seç</button>
+        <button class="danger" id="removeBtn" type="button">Fotoğrafı kaldır</button>
+      </div>
+
+      <div class="grid">
+        <div class="field">
+          <label for="brand">Marka</label>
+          <input id="brand" type="text" placeholder="Örn. Carhartt" />
+        </div>
+        <div class="field">
+          <label for="category">Kategori</label>
+          <select id="category">
+            <option value="tshirt">Tişört</option>
+            <option value="hoodie">Hoodie</option>
+            <option value="jacket">Ceket / Yelek</option>
+            <option value="jeans">Jean</option>
+            <option value="jersey">Forma</option>
+            <option value="other">Diğer</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="stitch">Dikiş</label>
+          <select id="stitch">
+            <option value="unknown">Bilmiyorum</option>
+            <option value="single">Single stitch</option>
+            <option value="double">Double stitch</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="country">Üretim yeri</label>
+          <select id="country">
+            <option value="unknown">Bilmiyorum</option>
+            <option value="usa">USA</option>
+            <option value="canada">Canada</option>
+            <option value="mexico">Mexico</option>
+            <option value="asia">Asya</option>
+            <option value="other">Diğer</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="tag">Etiket</label>
+          <select id="tag">
+            <option value="unknown">Bilmiyorum</option>
+            <option value="woven">Eski dokuma etiket</option>
+            <option value="printed">Baskılı iç etiket</option>
+            <option value="modern">Modern uzun etiket</option>
+            <option value="missing">Yok / kesilmiş</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="condition">Kondisyon</label>
+          <select id="condition">
+            <option value="excellent">Çok iyi</option>
+            <option value="good">İyi</option>
+            <option value="fair">Orta</option>
+            <option value="poor">Kötü</option>
+          </select>
+        </div>
+        <div class="field full">
+          <label for="notes">Not</label>
+          <textarea id="notes" placeholder="Etiket, ürün kodu, baskı veya dikiş detayları..."></textarea>
+        </div>
+      </div>
+
+      <button class="primary" id="analyzeBtn" type="button" style="width:100%;margin-top:14px">Analiz et</button>
+      <div class="hint">Fotoğraf cihazından dışarı gönderilmez. Bu sürüm, girdiğin bilgilere göre tahmin üretir.</div>
+    </section>
+
+    <section class="card result" id="result">
+      <div class="scores">
+        <div class="score"><span>Vintage olasılığı</span><strong id="vintageScore">0%</strong></div>
+        <div class="score"><span>Satış puanı</span><strong id="resaleScore">0/100</strong></div>
+      </div>
+      <div class="reasons" id="reasons"></div>
+      <div class="price"><small>Tahmini listeleme aralığı</small><strong id="priceRange">C$0 – C$0</strong><small>Satılmış ilanlarla ayrıca kontrol et.</small></div>
+    </section>
+  </main>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const input = $("photoInput");
+  const preview = $("preview");
+  const picker = $("picker");
+  let objectUrl = null;
+
+  function showImage(file){
+    if(!file) return;
+    if(objectUrl) URL.revokeObjectURL(objectUrl);
+    objectUrl = URL.createObjectURL(file);
+    preview.onload = () => picker.classList.add("has");
+    preview.onerror = () => {
+      picker.classList.remove("has");
+      alert("Fotoğraf önizlenemedi. Lütfen ekran görüntüsünü veya JPG formatında bir fotoğrafı dene.");
+    };
+    preview.src = objectUrl;
+  }
+
+  input.addEventListener("change", e => showImage(e.target.files && e.target.files[0]));
+  $("chooseBtn").addEventListener("click", () => input.click());
+  $("removeBtn").addEventListener("click", () => {
+    input.value = "";
+    preview.removeAttribute("src");
+    picker.classList.remove("has");
+    if(objectUrl){ URL.revokeObjectURL(objectUrl); objectUrl = null; }
+  });
+
+  $("analyzeBtn").addEventListener("click", () => {
+    let v = 20, r = 25, reasons = [];
+    const brand = $("brand").value.trim().toLowerCase();
+    const category = $("category").value;
+    const stitch = $("stitch").value;
+    const country = $("country").value;
+    const tag = $("tag").value;
+    const condition = $("condition").value;
+
+    const brands = ["carhartt","levi","nike","adidas","harley","reebok","champion","starter","patagonia","north face","wrangler"];
+    if(brands.some(x => brand.includes(x))){ v += 10; r += 15; reasons.push("✅ Tanınan marka, ikinci el talebini artırabilir."); }
+    if(stitch === "single"){ v += 25; r += 12; reasons.push("🧵 Single stitch, özellikle eski tişörtlerde güçlü bir işarettir."); }
+    if(stitch === "double"){ v -= 4; reasons.push("🪡 Double stitch vintage ihtimalini biraz düşürür."); }
+    if(country === "usa" || country === "canada"){ v += 14; r += 8; reasons.push("🌎 USA/Canada üretimi koleksiyon değerini artırabilir."); }
+    if(country === "mexico"){ v += 5; r += 3; reasons.push("🏭 Mexico üretimi 1990’lar sonu ve 2000’lerde sık görülür."); }
+    if(tag === "woven"){ v += 18; r += 7; reasons.push("🏷️ Eski dokuma etiket önemli bir dönem ipucudur."); }
+    if(tag === "printed"){ v -= 7; reasons.push("🖨️ Baskılı iç etiket genellikle daha yeni üretimlerde görülür."); }
+    if(tag === "modern"){ v -= 12; r -= 3; reasons.push("📄 Uzun modern bakım etiketi yeni üretime işaret edebilir."); }
+
+    const cond = {excellent:12,good:5,fair:-8,poor:-20};
+    r += cond[condition] || 0;
+    reasons.push("🧼 Kondisyon, satış değerini doğrudan etkiler.");
+
+    if(category === "jacket") r += 7;
+    if(category === "jersey") r += 8;
+
+    v = Math.max(3, Math.min(98, Math.round(v)));
+    r = Math.max(5, Math.min(96, Math.round(r)));
+
+    const priceBase = {tshirt:[18,45],hoodie:[25,65],jacket:[35,95],jeans:[25,70],jersey:[30,90],other:[15,50]}[category];
+    const m = .65 + r/75;
+    const min = Math.round(priceBase[0]*m/5)*5;
+    const max = Math.round(priceBase[1]*m/5)*5;
+
+    $("vintageScore").textContent = v + "%";
+    $("resaleScore").textContent = r + "/100";
+    $("priceRange").textContent = `C$${min} – C$${max}`;
+    $("reasons").innerHTML = reasons.slice(0,5).map(x => `<div class="reason">${x}</div>`).join("");
+    $("result").style.display = "block";
+    $("result").scrollIntoView({behavior:"smooth",block:"start"});
+  });
+
+  if("serviceWorker" in navigator){
+    window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+  }
+})();
+</script>
+</body>
+</html>
